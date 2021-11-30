@@ -50,11 +50,11 @@ module.exports = class users {
 };
 
 function get_admin_token() {
-  const endpoint = `https://login.microsoftonline.com/${"ff41217d-9ad8-48e2-a6f5-eac6b5de95a3"}/oauth2/v2.0/token`;
+  const endpoint = `https://login.microsoftonline.com/${"" }/oauth2/v2.0/token`;
   const requestParams = {
     grant_type: "client_credentials",
-    client_id: "ac4e325a-6c4f-408f-b6a9-393f0d84d38e",
-    client_secret: "urU7Q~Ol5nfGoUUXk3BqrXdVBu4HKWmFdi3iB",
+    client_id: "" ,
+    client_secret: "",
     scope: "https://graph.microsoft.com/.default",
   };
 
