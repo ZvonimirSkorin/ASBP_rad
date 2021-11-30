@@ -5,7 +5,7 @@ const config = {
   auth: {
     clientId: conf.appId,
     authority: conf.authority,
-    clientSecret: "urU7Q~Ol5nfGoUUXk3BqrXdVBu4HKWmFdi3iB",
+    clientSecret: "",
   },
   system: {
     loggerOptions: {
@@ -22,7 +22,7 @@ const msalConfig = {
   auth: {
     clientId: conf.appId,
     authority: conf.authority,
-    clientSecret: "PcZ7Q~bL8GrstKNTl7aSrVlw2A00Xebh7vfV2",
+    clientSecret: "",
     redirect: "http://localhost:3000/",
 
     system: {
