@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="form">
+      <input placeholder="username" type="text" class="input" />
+      <input placeholder="password" type="password" class="input" />
+      <div class="buttons">
+        <button id="login">Login</button>
+        <button onclick="location.assign('/create_user_html')">Create account</button>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    width: 100vw;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .form {
+    width: 500px;
+    max-width: 100%;
+    box-shadow: 0px 0px 10px 0px black;
+    margin: auto auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    box-sizing: border-box;
+    padding: 1rem;
+    min-height: 300px;
+    border-radius: 1rem;
+  }
+</style>
+
+<script>
+  let link = "https://zf67963b8-zd7e4bb83-gtw.qovery.io";
+  const silentLogin = () => {
+    if (localStorage.ASBPToken) {
+      fetch(link + "/silent", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify({ id: localStorage.ASBPId, token: localStorage.ASBPToken }),
+      })
+        .then((response) => response.json())
+        .then((data) => change_DOM(data))
+        .catch((err) => console.log(err));
+    }
+  };
+  silentLogin();
+  window.addEventListener("message", (event) => {
+    if (localStorage.ASBPToken) return;
+    var payload = JSON.parse(event.data);
+    if (payload.token == null) return;
+    addToken(payload);
+    silentLogin();
+  });
+  document.getElementById("login").addEventListener("click", () => {
+    const data = get_data();
+
+    fetch(link + "/loginUP", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => change_DOM(data))
+      .catch((err) => console.log(err));
+  });
+
+  function get_data() {
+    let inputs = document.getElementsByClassName("input");
+    return {
+      username: inputs[0].value + "@asbpproject.onmicrosoft.com",
+      password: inputs[1].value,
+    };
+  }
+
+  function change_DOM(data) {
+    if (data.err !== undefined) {
+      if (data.err === "access") {
+        alert("Nemate pristup");
+      } else alert("Kriva lozinka ili username");
+
+      return;
+    }
+    addToken(data.ASBPToken);
+    const body = document.querySelector("body");
+
+    body.innerHTML = "";
+    data.data.forEach((element) => {
+      let el = `<div style="margin:0 auto">${element}</div>`;
+      body.innerHTML += el;
+    });
+    body.innerHTML += '<button onclick="logout()">Logout</button>';
+  }
+
+  function addToken(data) {
+    if (data === undefined) return;
+    localStorage.setItem("ASBPToken", data.token);
+    localStorage.setItem("ASBPId", data.id);
+    localStorage.setItem("ASBPExpire", data.valid);
+  }
+
+  function logout() {
+    localStorage.removeItem("ASBPToken");
+    localStorage.removeItem("ASBPId");
+    localStorage.removeItem("ASBPExpire");
+    location.assign("/");
+  }
+
+  window.onload = () => {
+    const data = { token: localStorage.getItem("ASBPToken"), id: localStorage.getItem("ASBPId"), valid: localStorage.getItem("ASBPExpire") };
+
+    window.parent.postMessage(JSON.stringify(data), "*");
+  };
+</script>

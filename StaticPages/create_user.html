@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASBP</title>
+  </head>
+  <body>
+    <div class="form">
+      <input placeholder="username" type="text" class="input" />
+      <input placeholder="password" type="password" class="input" />
+      <div class="buttons">
+        <button id="login">Create user</button>
+        <button onclick="location.assign('/')">Go back to login</button>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    width: 100vw;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .form {
+    width: 500px;
+    max-width: 100%;
+    box-shadow: 0px 0px 10px 0px black;
+    margin: auto auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    box-sizing: border-box;
+    padding: 1rem;
+    min-height: 300px;
+    border-radius: 1rem;
+  }
+</style>
+
+<script>
+  let link = "https://zf67963b8-zd7e4bb83-gtw.qovery.io";
+
+  document.getElementById("login").addEventListener("click", () => {
+    const data = get_data();
+
+    fetch(link + "/create_user", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Uspješno kreiran account");
+          location.assign("/");
+        }
+      })
+      .catch((err) => console.log(err));
+  });
+
+  function get_data() {
+    let inputs = document.getElementsByClassName("input");
+    return {
+      username: inputs[0].value,
+      mail: inputs[0].value + "@asbpproject.onmicrosoft.com",
+
+      password: inputs[1].value,
+    };
+  }
+</script>
